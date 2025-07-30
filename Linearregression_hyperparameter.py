@@ -61,33 +61,7 @@ data = data.drop(['sunrise','sunset','moonrise','moonset'],axis = 1)
 
 data.info()
 
-data['condition_text'].value_counts()
-
-# Define a frequency threshold
-threshold = 20
-
-# Get value counts
-condition_counts = data['condition_text'].value_counts()
-
-# Identify rare conditions
-rare_conditions = condition_counts[condition_counts < threshold].index
-
-# Replace them with "Rare"
-data['condition_text_grouped'] = data['condition_text'].apply(lambda x: 'Rare' if x in rare_conditions else x)
-
-
-data['condition_text_grouped'].count()
-
-from sklearn.preprocessing import LabelEncoder
-
-le = LabelEncoder()
-data['condition_label'] = le.fit_transform(data['condition_text_grouped'])
-
-label_mapping = dict(zip(le.classes_, le.transform(le.classes_)))
-print(label_mapping)
-
-
-data = data.drop(['country','location_name','timezone','wind_direction','moon_phase'],axis =1)
+data = data.drop(['country','location_name','timezone','condition_text','wind_direction','moon_phase'],axis =1)
 data.info()
 
 sns.histplot(data['visibility_miles'], bins=30, kde=True)
@@ -110,13 +84,9 @@ corr = data.corr(numeric_only=True)
 
 # Plot the heatmap
 plt.figure(figsize=(16, 16))
-sns.heatmap(corr, linewidths=0.5, fmt=".2f")
+sns.heatmap(corr, linewidths=0.5)
 plt.title('Correlation Heatmap (excluding NaNs)')
 plt.show()
-
-
-data['feels_like_fahrenheit'].describe()
-sns.histplot(data['feels_like_fahrenheit'], bins=30, kde=True)
 
 
 data['temperature_fahrenheit'].describe()
@@ -153,7 +123,6 @@ X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
 #Reading the dataset using pandas
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -307,3 +276,4 @@ elastic_mae = mean_absolute_error(y_test, elastic_y_pred)
 elastic_r2 = r2_score(y_test, elastic_y_pred)
 print(elastic_mae)
 print(elastic_r2)
+
